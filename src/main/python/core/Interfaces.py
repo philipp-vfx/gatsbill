@@ -29,3 +29,5 @@ class Cryptable():
         """
         if(self.cryptoEngine == None):
             raise RuntimeError("No crypt engine found. Call initializeCryptoEngine() before any other operation.")
+
+        return self.cryptoEngine.decrypt(base64.b64decode(data))

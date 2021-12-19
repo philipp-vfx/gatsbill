@@ -2,6 +2,7 @@ from core.DBUtils import Helper
 from core.Interfaces import Cryptable
 from sqlalchemy import Column, String, Text, Date, ForeignKey
 import uuid
+import datetime
 
 Base = Helper.instance().getOrmBase()
 
@@ -13,10 +14,10 @@ class Transaction(Base, Cryptable):
     __tablename__ = 'transactions'
 
     id = Column(String(36), primary_key=True)
-    user = Column(String(36), ForeignKey('user.id'))
-    _date = Column("date", Date)
-    _currency = Column("currency", Text)
-    _amount = Column("amount", Text)
+    user = Column(String(36), ForeignKey('user.id'), nullable=False)
+    _date = Column("date", Text, nullable=False)
+    _currency = Column("currency", Text, nullable=False)
+    _amount = Column("amount", Text, nullable=False)
     _creditorName = Column("creditor_name", Text)
     _creditorIban = Column("creditor_iban", Text)
     _debtorName = Column("deptor_name", Text)
@@ -30,10 +31,13 @@ class Transaction(Base, Cryptable):
         self.id = str(uuid.uuid4())
 
     def getDate(self):
-        return self._date
+        dateStr = self.encryptedToText(self._date)
+        return datetime.datetime.fromisoformat(dateStr)
 
     def setDate(self, date):
-        self._date = date
+        if(isinstance(date, datetime.datetime) == False):
+            raise TypeError("Argument must be of type datetime. " + str(date.__class__) + " was provided")
+        self._date = self.textToEncrypted(str(date))
 
     def getCurrency(self):
         return self.encryptedToText(self._currency)
@@ -42,7 +46,7 @@ class Transaction(Base, Cryptable):
         self._currency = self.textToEncrypted(currency)
 
     def getAmount(self):
-        return self.encryptedToText(self._amount)
+        return float(self.encryptedToText(self._amount))
 
     def setAmount(self, amount):
         amountStr = str(amount)
