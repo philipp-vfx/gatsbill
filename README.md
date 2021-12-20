@@ -1,2 +1,2 @@
-# gatsby
-Free accounting software to keep track of all transactions, expenses and income.
+# gatsbill
+Free software to safely store and manage bills.
