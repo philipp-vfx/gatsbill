@@ -11,7 +11,7 @@ use_plugin("python.install_dependencies")
 use_plugin("python.sphinx")
 
 
-name = "gatsby"
+name = "gatsbill"
 
 
 @task("run", description="Runs the application")
